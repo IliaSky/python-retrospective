@@ -11,8 +11,6 @@ class Person:
         self.set_parents(father, mother)
 
     def set_parents(self, father, mother):
-        self.father = father
-        self.mother = mother
         if father is not None:
             father.add_child(self)
         if mother is not None:
