@@ -9,23 +9,12 @@ def groupby(func, seq):
 
 
 def iterate(func):
-    return Iterator(func)
+    result = lambda x: x
 
-
-class Iterator():
-    def __init__(self, func):
-        self.func = func
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        try:
-            current = self.current
-            self.current = lambda x: self.func(current(x))
-        except AttributeError:
-            self.current = lambda x: x
-        return self.current
+    while True:
+        yield result
+        last_result = result
+        result = lambda x: func(last_result(x))
 
 
 def zip_with(func, *iterables):
