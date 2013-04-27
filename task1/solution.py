@@ -14,6 +14,7 @@ SIGNS_AND_THEIR_END_DATES = [
     ('Козирог', (12, 31))
 ]
 
+
 def what_is_my_sign(day, month):
     date_of_birth = (month, day)
     for sign, end_date in SIGNS_AND_THEIR_END_DATES:
