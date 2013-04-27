@@ -8,13 +8,16 @@ def groupby(func, seq):
     return result
 
 
+def compose(outer, inner):
+    return lambda x: outer(inner(x))
+
+
 def iterate(func):
     result = lambda x: x
 
     while True:
         yield result
-        last_result = result
-        result = lambda x: func(last_result(x))
+        result = compose(func, result)
 
 
 def zip_with(func, *iterables):
