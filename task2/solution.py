@@ -2,10 +2,10 @@ from collections import OrderedDict
 
 
 def groupby(func, seq):
-    result = {func(x): [] for x in seq}
+    groups = {}
     for x in seq:
-        result[func(x)].append(x)
-    return result
+        groups.setdefault(func(x), []).append(x)
+    return groups
 
 
 def compose(outer, inner):
