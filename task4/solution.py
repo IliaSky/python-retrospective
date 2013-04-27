@@ -1,4 +1,8 @@
+from itertools import chain
+
+
 class TicTacToeBoard:
+
     def __init__(self):
         self.board = [' ' for i in range(9)]
         self.all_coordinates = [i + str(j) for j in [3, 2, 1]
@@ -17,8 +21,7 @@ class TicTacToeBoard:
             self.check_for_invalid_turn(coordinates, value)
             self.board[self.get_index(coordinates)] = value
             self.last_turn = value
-            self.check_for_winning_move(coordinates, value)
-            self.check_if_board_is_full()
+            self.update_game_status()
 
     def check_for_invalid_turn(self, coordinates, value):
         if coordinates not in self.all_coordinates:
@@ -30,32 +33,25 @@ class TicTacToeBoard:
         if value == self.last_turn:
             raise NotYourTurn('Player {}, it is not your turn'.format(value))
 
-    def check_for_winning_move(self, coordinates, value):
-        index = self.get_index(coordinates)
-        current_row = self.get_row(index // 3)
-        current_column = self.get_column(index % 3)
-        primary_diagonal = self.get_secondary_diagonal()
-        secondary_diagonal = self.get_primary_diagonal()
-        possible_winning_lines = [current_row, current_column,
-                                  primary_diagonal, secondary_diagonal]
-        if set(value) in [set(line) for line in possible_winning_lines]:
-            self.status = "{} wins!".format(value)
+    def update_game_status(self):
+        self.check_for_winner()
+        self.check_for_full_board()
 
-    def get_row(self, row_index):
-        return [self.board[i] for i in range(9) if i // 3 == row_index]
+    def check_for_winner(self):
+        rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
+        columns = zip(*rows)
+        diagonals = [[0, 4, 8], [2, 4, 6]]
+        lines = [self.get_line(indexes) for indexes in list(
+            chain(rows, columns, diagonals))]
+        if set(self.last_turn) in [set(line) for line in lines]:
+            self.status = "{} wins!".format(self.last_turn)
 
-    def get_column(self, column_index):
-        return [self.board[i] for i in range(9) if i % 3 == column_index]
-
-    def get_primary_diagonal(self):
-        return [self.board[i] for i in [0, 4, 8]]
-
-    def get_secondary_diagonal(self):
-        return [self.board[i] for i in [2, 4, 6]]
-
-    def check_if_board_is_full(self):
+    def check_for_full_board(self):
         if ' ' not in self.board and self.status == 'Game in progress.':
             self.status = "Draw!"
+
+    def get_line(self, cell_indexes):
+        return [self.board[i] for i in cell_indexes]
 
     def game_status(self):
         return self.status
