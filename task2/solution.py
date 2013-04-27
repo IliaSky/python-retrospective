@@ -1,3 +1,6 @@
+from collections import OrderedDict
+
+
 def groupby(func, seq):
     result = {func(x): [] for x in seq}
     for x in seq:
@@ -30,19 +33,17 @@ def zip_with(func, *iterables):
 
 
 def cache(func, cache_size):
-    if not hasattr(cache, 'arguments'):
-        cache.arguments = []
-        cache.values = []
+    if not hasattr(cache, 'cache'):
+        cache.dict = OrderedDict()
 
     def func_cached(*args):
-        if args in cache.arguments:
-            index = cache.arguments.index(args)
-            cache.arguments.insert(0, cache.arguments.pop(index))
-            cache.values.insert(0, cache.values.pop(index))
-            return cache.values[0]
+        if args in cache.dict:
+            return cache.dict[args]
         else:
             value = func(*args)
-            cache.arguments.append(args)
-            cache.values.append(value)
+            if cache_size > 0:
+                if len(cache.dict) == cache_size:
+                    cache.dict.popitem(last=False)
+                cache.dict[args] = value
             return value
     return func_cached
