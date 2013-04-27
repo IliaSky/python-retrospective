@@ -27,7 +27,7 @@ class Person:
 
     def get_siblings(self, gender=None):
         siblings = [parent.children(gender) for parent in self.parents]
-        siblings = set(chain.from_iterable(siblings)) - {self}
+        siblings = set(chain.from_iterable(siblings)) - set(self)
         return list(siblings)
 
     def to_string(self):
