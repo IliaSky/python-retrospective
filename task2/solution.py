@@ -33,17 +33,16 @@ def zip_with(func, *iterables):
 
 
 def cache(func, cache_size):
-    if not hasattr(cache, 'dict'):
-        cache.dict = OrderedDict()
+    cached_calls = OrderedDict()
 
     def func_cached(*args):
-        if args in cache.dict:
-            return cache.dict[args]
+        if args in cached_calls:
+            return cached_calls[args]
         else:
             value = func(*args)
             if cache_size > 0:
-                if len(cache.dict) == cache_size:
-                    cache.dict.popitem(last=False)
-                cache.dict[args] = value
+                if len(cached_calls) == cache_size:
+                    cached_calls.popitem(last=False)
+                cached_calls[args] = value
             return value
     return func_cached
