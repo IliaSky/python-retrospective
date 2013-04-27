@@ -33,7 +33,7 @@ def zip_with(func, *iterables):
 
 
 def cache(func, cache_size):
-    if not hasattr(cache, 'cache'):
+    if not hasattr(cache, 'dict'):
         cache.dict = OrderedDict()
 
     def func_cached(*args):
