@@ -5,26 +5,29 @@ class TicTacToeBoard:
 
     def __init__(self):
         self.board = [' ' for i in range(9)]
-        self.all_coordinates = [i + str(j) for j in [3, 2, 1]
-                                for i in ['A', 'B', 'C']]
         self.status = 'Game in progress.'
         self.last_turn = ''
 
-    def get_index(self, coordinates):
-        return self.all_coordinates.index(coordinates)
+    @staticmethod
+    def all_coordinates():
+        return [i + str(j) for j in [3, 2, 1] for i in ['A', 'B', 'C']]
+
+    @staticmethod
+    def get_index(coordinates):
+        return TicTacToeBoard.all_coordinates().index(coordinates)
 
     def __getitem__(self, coordinates):
-        return self.board[self.get_index(coordinates)]
+        return self.board[TicTacToeBoard.get_index(coordinates)]
 
     def __setitem__(self, coordinates, value):
         if self.status == 'Game in progress.':
             self.check_for_invalid_turn(coordinates, value)
-            self.board[self.get_index(coordinates)] = value
+            self.board[TicTacToeBoard.get_index(coordinates)] = value
             self.last_turn = value
             self.update_game_status()
 
     def check_for_invalid_turn(self, coordinates, value):
-        if coordinates not in self.all_coordinates:
+        if coordinates not in TicTacToeBoard.all_coordinates():
             raise InvalidKey('No tile at coordinates {}'.format(coordinates))
         if self[coordinates] != ' ':
             raise InvalidMove('Tile {} is already taken'.format(coordinates))
@@ -41,8 +44,8 @@ class TicTacToeBoard:
         rows = [[0, 1, 2], [3, 4, 5], [6, 7, 8]]
         columns = zip(*rows)
         diagonals = [[0, 4, 8], [2, 4, 6]]
-        lines = [self.get_line(indexes) for indexes in list(
-            chain(rows, columns, diagonals))]
+        lines = [self.get_line(indexes)
+                 for indexes in list(chain(rows, columns, diagonals))]
         if set(self.last_turn) in [set(line) for line in lines]:
             self.status = "{} wins!".format(self.last_turn)
 
